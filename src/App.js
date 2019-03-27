@@ -4,16 +4,7 @@ import './App.css';
 
 // import './demos/flux/redux/app'
 import store from './store/'
-
-let i = 1;
-let j = 6;
-
-
-let t = i + j;
-let m = <div>ddd{t}</div>
-
-console.dir(m);
-
+import {StoreComponent} from './store/store';
 
 class App extends Component {
 
@@ -23,32 +14,34 @@ class App extends Component {
 	      message : store.state.helloModule.message
 	  };
 	  this.addCountFn = this.addCountFn.bind(this);
+
+      // 这里设计逻辑注册信息到store
+	  // register具体干什么？
+	  store.register && store.register(this);
+	  // 第一 实现双向绑定
+	  // 第二 封装setState,业务只需要在store修改state，视图动态刷新
+      
   }
   shouldComponentUpdate(nextProps, nextState) {
-	  console.log(this.state.message);
-	  console.log(this.state.u);
       return true;
   }
-
   render() {
     
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React {this.state.message}
-          </a>
+        <header>
+		  <br/>
+          <div>{this.state.message}</div>
           <br/>
-		  <button onClick={this.addCountFn}>{this.state.message}</button>
+		  <div>
+			<input/>
+		  </div>
+          
+          <br/>
+		  <div>
+			  <button onClick={this.addCountFn}>click</button>
+		  </div>
+		  
 
         </header>
       </div>
@@ -58,13 +51,10 @@ class App extends Component {
   addCountFn() {
 
 	  // 将 message修改为uuu
-	  store.dispatch("setMessage",'uuu');
+	  store.dispatch("setMessage",'uuu111');
 	  /*this.setState({
 	      message : store.state.helloModule.message
 	  })*/
-	  this.setState({
-	      u : 's'
-	  });
   }
 
 }

@@ -1,3 +1,5 @@
+import React, { Component } from 'react';
+
 function Store(modules) {
 
 	if(!modules || typeof(modules) != 'object')
@@ -61,4 +63,14 @@ Store.prototype.dispatch = function (action,param){
 
 }
 
+class StoreComponent extends Component
+{
+	constructor(props) {
+	   super(props);
+	}
+}
+export {StoreComponent};
+
 export default Store;
+
+
