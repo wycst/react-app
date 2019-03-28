@@ -16,7 +16,7 @@ class User extends Component {
           }
 
           store.register(this);
-
+          console.log(this);
       }
 
       render() {
@@ -28,6 +28,11 @@ class User extends Component {
             </div>
           );
       }
+
+      componentWillUnmount() {
+        console.log(' unmount');
+      }
+
 
 }
 
@@ -57,7 +62,7 @@ class App extends Component {
   render() {
 
     console.log('========== render app');
-
+    
     let user = <User></User>;
     if(this.state.hello.message == 'hidden') {
       user = null;

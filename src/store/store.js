@@ -46,11 +46,19 @@ function Store(modules) {
 	this.components = [];
 
 	let watcher = () => {
-		this.components.forEach(element => {
-			if(element && typeof(element.setState) == 'function') {
-				console.log(element);
+
+		// 目前只要有属性变化就会调用一次，有几个属性变化就调用几次？
+		// 如果有n个属性变动了，如何确保此只执行一次？队列？
+		this.components = this.components.filter(element => {
+
+			if(!element || !typeof(element.setState) == 'function') 
+				return false;
+
+			if(!element.unMounted) {
 				element.setState({});
+				return true;
 			}
+			return false;
 		});
 	}
 
@@ -85,11 +93,26 @@ Store.prototype.register = function(component,listener) {
 
 		if(component == null) return ;
 		if(this.components.indexOf(component) == -1) {
-				this.components.push(component);
+			this.components.push(component);
+
+            let componentWillUnmount = component.componentWillUnmount;
+			if(componentWillUnmount && typeof(componentWillUnmount) == 'function') {
+				
+				component.componentWillUnmount = () => {
+					componentWillUnmount.call(component);
+					component.unMounted = true;
+				}
+
+			}
 		}
 }
 
 Store.prototype.dispatch = function (action, param, callback) {
+
+	process.nextTick(function() {
+		console.log(1);
+	  });
+
 
 	if (typeof action != 'string') {
 		throw new Error(' The first parameter while call dispatch should be a string type ');
