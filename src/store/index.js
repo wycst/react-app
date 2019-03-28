@@ -11,8 +11,20 @@ let helloModule = {
 	}
 }
 
+let userModule = {
+    state : {
+	   username : 'root'
+	},
+    actions : {
+	   setName(state,username1) {
+		   state.username = username1;
+	   }
+	}
+}
+
 const store = new Store({
-	helloModule
+	helloModule,
+	userModule
 });
 
 export default store;

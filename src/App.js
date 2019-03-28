@@ -4,44 +4,84 @@ import './App.css';
 
 // import './demos/flux/redux/app'
 import store from './store/'
-import {StoreComponent} from './store/store';
+import { StoreComponent } from './store/store';
+
+class User extends Component {
+
+      constructor(props) {
+          super(props);
+
+          this.state = {
+            user : store.state.userModule
+          }
+
+          store.register(this);
+
+      }
+
+      render() {
+          console.log('render User');
+          return (
+            <div>
+              <span>user:</span>
+              <span>{this.state.user.username}</span>
+            </div>
+          );
+      }
+
+}
+
 
 class App extends Component {
 
   constructor(props) {
-	  super(props);
-	  this.state = {
-	      message : store.state.helloModule.message
-	  };
-	  this.addCountFn = this.addCountFn.bind(this);
+    super(props);
+    this.state = {
+      hello: store.state.helloModule
+    };
+    this.addCountFn = this.addCountFn.bind(this);
 
-      // ÕâÀïÉè¼ÆÂß¼­×¢²áĞÅÏ¢µ½store
-	  // register¾ßÌå¸ÉÊ²Ã´£¿
-	  store.register && store.register(this);
-	  // µÚÒ» ÊµÏÖË«Ïò°ó¶¨
-	  // µÚ¶ş ·â×°setState,ÒµÎñÖ»ĞèÒªÔÚstoreĞŞ¸Ästate£¬ÊÓÍ¼¶¯Ì¬Ë¢ĞÂ
-      
+    // è¿™é‡Œè®¾è®¡é€»è¾‘æ³¨å†Œä¿¡æ¯åˆ°store
+    // registerå…·ä½“å¹²ä»€ä¹ˆï¼Ÿ
+    // ç¬¬ä¸€ å®ç°åŒå‘ç»‘å®š
+    // ç¬¬äºŒ å°è£…setState,ä¸šåŠ¡åªéœ€è¦åœ¨storeä¿®æ”¹stateï¼Œè§†å›¾åŠ¨æ€åˆ·æ–°
+    store.register(this);
+
+
   }
+
   shouldComponentUpdate(nextProps, nextState) {
-      return true;
+    return true;
   }
+
   render() {
-    
+
+    console.log('========== render app');
+
+    let user = <User></User>;
+    if(this.state.hello.message == 'hidden') {
+      user = null;
+    }
+
     return (
       <div className="App">
         <header>
-		  <br/>
-          <div>{this.state.message}</div>
-          <br/>
-		  <div>
-			<input/>
-		  </div>
-          
-          <br/>
-		  <div>
-			  <button onClick={this.addCountFn}>click</button>
-		  </div>
-		  
+          <br />
+            {user}
+            è¯´ï¼š{this.state.hello.message}
+          <br />
+          <div>
+            æ‹›å‘¼è¯­ï¼š<input ref="msg" style={{ width: 400 + 'px' }} />
+          </div>
+          <div>
+            ä¿®æ”¹äººï¼š<input ref="username" style={{ width: 400 + 'px' }} />
+          </div>
+
+          <br />
+          <div>
+            <button onClick={this.addCountFn}>click</button>
+          </div>
+
 
         </header>
       </div>
@@ -49,12 +89,10 @@ class App extends Component {
   }
 
   addCountFn() {
-
-	  // ½« messageĞŞ¸ÄÎªuuu
-	  store.dispatch("setMessage",'uuu111');
-	  /*this.setState({
-	      message : store.state.helloModule.message
-	  })*/
+    // this.setState({});
+    // å°† messageä¿®æ”¹ä¸ºuuu
+    store.dispatch("setMessage", this.refs.msg.value);
+    store.dispatch("setName", this.refs.username.value);
   }
 
 }
