@@ -47,7 +47,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hello: store.state.helloModule
+      hello: store.state.helloModule,
+      user : store.state.userModule
     };
     this.addCountFn = this.addCountFn.bind(this);
 
@@ -56,6 +57,7 @@ class App extends Component {
 
   }
 
+  
   shouldComponentUpdate(nextProps, nextState) {
     return true;
   }
@@ -89,7 +91,11 @@ class App extends Component {
             <button onClick={() => { store.unsubscribe("subscribe1")}}>click2</button>
           </div>
 
-
+          <div>
+            {this.state.user.list.map((element,i) => {
+                return (<li key={i}>{element.name}</li>)
+            })}
+          </div>
         </header>
       </div>
     );
@@ -105,7 +111,9 @@ class App extends Component {
     store.dispatch("setName", this.refs.username.value,() => {
          console.log('========== setName 回调执行');
     });
-
+    store.dispatch("add", {name : 'kkkkkkkkk'},() => {
+          console.log('========== add 回调执行');
+    });
   }
 
 }

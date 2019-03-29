@@ -16,6 +16,7 @@ function proxy(object, watcher) {
 		},
 		set: function (target, key, value, receiver) {
 			if (target[key] !== value) {
+				console.log(key + '/' + value);
 				// 如果value是对象类型被重新赋值，是否需要进行重新代理?
 				// 如果值有变动
 				watcher && watcher();
@@ -34,6 +35,11 @@ function proxy(object, watcher) {
 
 	return proxyTarget;
 }
+
+let arr = proxy([],function() {
+
+	console.log(1444423);
+});
 
 function Store(modules) {
 
@@ -259,8 +265,8 @@ Store.prototype.dispatch = function (actionName, param, callback) {
 			this.frameImmediate = false;
 			// 执行
 			this.refreshStateChange();
-			// this.executeCallbacks();
 		}
+		
 	});
 
 	// 在 setImmediate中依次执行，结束后清除队列
