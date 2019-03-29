@@ -4,7 +4,14 @@ import './App.css';
 
 // import './demos/flux/redux/app'
 import store from './store/'
-import { StoreComponent } from './store/store';
+
+store.subscribe("subscribe1",function() {
+  console.log(" 111 subscribe1 trigger   ");
+});
+
+store.subscribe("subscribe2",function() {
+  console.log(" 222 subscribe2 trigger ");
+});
 
 class User extends Component {
 
@@ -16,11 +23,10 @@ class User extends Component {
           }
 
           store.register(this);
-          console.log(this);
       }
 
       render() {
-          console.log('render User');
+          console.log('render User ');
           return (
             <div>
               <span>user:</span>
@@ -32,7 +38,6 @@ class User extends Component {
       componentWillUnmount() {
         console.log(' unmount');
       }
-
 
 }
 
@@ -46,12 +51,8 @@ class App extends Component {
     };
     this.addCountFn = this.addCountFn.bind(this);
 
-    // 这里设计逻辑注册信息到store
-    // register具体干什么？
-    // 第一 实现双向绑定
-    // 第二 封装setState,业务只需要在store修改state，视图动态刷新
+    // 将组件注册到store，能接受到state的变化自动调用组件的setState
     store.register(this);
-
 
   }
 
@@ -85,6 +86,7 @@ class App extends Component {
           <br />
           <div>
             <button onClick={this.addCountFn}>click</button>
+            <button onClick={() => { store.unsubscribe("subscribe1")}}>click2</button>
           </div>
 
 
@@ -96,8 +98,14 @@ class App extends Component {
   addCountFn() {
     // this.setState({});
     // 将 message修改为uuu
-    store.dispatch("setMessage", this.refs.msg.value);
-    store.dispatch("setName", this.refs.username.value);
+    store.dispatch("setMessage",  this.refs.msg.value,() => {
+         console.log('========== setmessage1 回调执行');
+
+    });
+    store.dispatch("setName", this.refs.username.value,() => {
+         console.log('========== setName 回调执行');
+    });
+
   }
 
 }

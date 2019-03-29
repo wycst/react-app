@@ -6,7 +6,8 @@ let helloModule = {
 	},
     actions : {
 	   setMessage(state,msg) {
-		   state.message = msg;
+			console.log('=============helloModule setMessage ');
+			state.message = msg;
 	   }
 	}
 }
@@ -17,7 +18,12 @@ let userModule = {
 	},
     actions : {
 	   setName(state,username1) {
-		   state.username = username1;
+			console.log('============= setName ');
+			state.username = username1;
+		},
+		setMessage(state,msg) {
+			console.log('=============userModule setMessage ');
+			state.message = msg;
 	   }
 	}
 }
