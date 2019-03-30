@@ -5,7 +5,7 @@ import React, { Component } from 'react';
  * @param {监听对象} object 
  * @param {监听函数} watcher 
  */
-function proxy(object, watcher) {
+function proxy(object, watcher, deep) {
 
 	if (!object || typeof (object) != 'object') return object;
 
@@ -15,15 +15,29 @@ function proxy(object, watcher) {
 			return Reflect.get(target, key, receiver);
 		},
 		set: function (target, key, value, receiver) {
-			if (target[key] !== value) {
-				console.log(key + '/' + value);
-				// 如果value是对象类型被重新赋值，是否需要进行重新代理?
-				// 如果值有变动
-				watcher && watcher();
-			}
+			
+			if(key !== '$isProxyed4Store') {
+				// 已经通过本函数代理过
+				if (target[key] !== value) {
+					// 如果值有变动
+					watcher && watcher();
+					
+					// 如果value是对象类型被重新赋值，是否需要进行重新代理?
+					// 可设置参数deep进行控制，暂不实现
+					if(value && typeof(value) == 'object') {
+						if(value['$isProxyed4Store'] !== true) {
+							value = proxy(value,watcher,deep);
+						}
+					}
+
+				}
+			}	
+
 			return Reflect.set(target, key, value, receiver);
 		}
 	});
+
+	proxyTarget['$isProxyed4Store'] = true;
 
 	// 遍历子属性
 	for (let key in object) {
@@ -36,11 +50,22 @@ function proxy(object, watcher) {
 	return proxyTarget;
 }
 
-let arr = proxy([],function() {
-
-	console.log(1444423);
+let arr1 = {};
+let arr2 = proxy(arr1,function() {
+	console.log(222);
 });
 
+let arr3 = proxy(arr2,function() {
+	console.log(333);
+});
+arr3.id = 123;
+console.log(444);
+
+
+/**
+ * store构造方法
+ * @param {模块} modules 
+ */
 function Store(modules) {
 
 	console.log(" create Store 11 ... ");

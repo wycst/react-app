@@ -28,7 +28,7 @@ let userModule = {
 		},
 		add(state, o) {
 			state.list.push(o);
-			o.name = 'wwwwww';
+			o.name = 'kkkkkk';
 
 		}
 	}

@@ -2,8 +2,19 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import 'antd/dist/antd.css';
+import {Button} from 'antd';
+
 // import './demos/flux/redux/app'
 import store from './store/'
+
+// import renderRoutes from './router/routers'
+import { HashRouter, Route, Switch } from 'react-router-dom'
+
+import Home from './views/home'
+import Index from './views/index'
+
+
 
 store.subscribe("subscribe1",function() {
   console.log(" 111 subscribe1 trigger   ");
@@ -87,6 +98,7 @@ class App extends Component {
 
           <br />
           <div>
+            <Button type="danger">Button</Button>
             <button onClick={this.addCountFn}>click</button>
             <button onClick={() => { store.unsubscribe("subscribe1")}}>click2</button>
           </div>
@@ -96,6 +108,15 @@ class App extends Component {
                 return (<li key={i}>{element.name}</li>)
             })}
           </div>
+
+          <HashRouter>
+              <Switch>
+                  <Route exact path="/" component={Home}/>
+                  <Route exact path="/detail" component={Index}/>
+              </Switch>
+          </HashRouter>
+
+
         </header>
       </div>
     );
@@ -111,7 +132,7 @@ class App extends Component {
     store.dispatch("setName", this.refs.username.value,() => {
          console.log('========== setName 回调执行');
     });
-    store.dispatch("add", {name : 'kkkkkkkkk'},() => {
+    store.dispatch("add", {name : 'aaaaaaaaaaa'},() => {
           console.log('========== add 回调执行');
     });
   }
