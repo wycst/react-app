@@ -2,9 +2,12 @@ import React from 'react';
 
 export default class Index extends React.Component {
     render() {
+
+        console.log(window.location.hash);
+
         return (
             <div>
-                <a>»Øµ½home</a>
+                <a>å›žåˆ°home</a>
             </div>
         )
     }

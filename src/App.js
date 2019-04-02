@@ -9,19 +9,20 @@ import {Button} from 'antd';
 import store from './store/'
 
 // import renderRoutes from './router/routers'
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter,BrowserRouter, Route, Switch,Link} from 'react-router-dom'
 
 import Home from './views/home'
 import Index from './views/index'
 
-
+let m1 = import('./views/demo');
+/*m1.then(m => {
+  console.log(m.default);
+  console.log(m.default == Home);
+})*/
+console.log('======== 1');
 
 store.subscribe("subscribe1",function() {
-  console.log(" 111 subscribe1 trigger   ");
-});
-
-store.subscribe("subscribe2",function() {
-  console.log(" 222 subscribe2 trigger ");
+    console.log(1);
 });
 
 class User extends Component {
@@ -75,8 +76,6 @@ class App extends Component {
 
   render() {
 
-    console.log('========== render app');
-    
     let user = <User></User>;
     if(this.state.hello.message == 'hidden') {
       user = null;
@@ -100,7 +99,6 @@ class App extends Component {
           <div>
             <Button type="danger">Button</Button>
             <button onClick={this.addCountFn}>click</button>
-            <button onClick={() => { store.unsubscribe("subscribe1")}}>click2</button>
           </div>
 
           <div>
@@ -109,12 +107,28 @@ class App extends Component {
             })}
           </div>
 
-          <HashRouter>
-              <Switch>
-                  <Route exact path="/" component={Home}/>
-                  <Route exact path="/detail" component={Index}/>
-              </Switch>
-          </HashRouter>
+          <div id="rt" style={{width:200,height:300}}>
+          
+            <HashRouter>
+                
+                <div>
+                  <Link to="/">home</Link>
+                  <Link to="/home/detail">About</Link>
+                </div>
+                <br/>
+                <br/>
+                <div>
+                  <Switch>
+                        <Route exact path="/" component={Home}/>
+                        <Route exact>
+                            <Route exact path="/home/detail" component={Index}/>
+                        </Route>
+                  </Switch>
+                </div>
+
+            </HashRouter>
+          </div>
+
 
 
         </header>

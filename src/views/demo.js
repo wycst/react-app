@@ -1,10 +1,9 @@
 import React from 'react';
 
-export default class Home extends React.Component {
+console.log('========= load demo');
+
+export default class Demo extends React.Component {
     render() {
-
-        console.log(window.location.hash);
-
         return (
             <div>
                 <a>detail</a>

@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 
 /**
  * 
- * @param {¼àÌı¶ÔÏó} object 
- * @param {¼àÌıº¯Êı} watcher 
+ * @param {ç›‘å¬å¯¹è±¡} object 
+ * @param {ç›‘å¬å‡½æ•°} watcher 
  */
 function proxy(object, watcher, deep) {
 
 	if (!object || typeof (object) != 'object') return object;
 
-	// µ±Ç°¶ÔÏóÊôĞÔ
+	// å½“å‰å¯¹è±¡å±æ€§
 	let proxyTarget = new Proxy(object, {
 		get: function (target, key, receiver) {
 			return Reflect.get(target, key, receiver);
@@ -17,13 +17,13 @@ function proxy(object, watcher, deep) {
 		set: function (target, key, value, receiver) {
 			
 			if(key !== '$isProxyed4Store') {
-				// ÒÑ¾­Í¨¹ı±¾º¯Êı´úÀí¹ı
+				// å·²ç»é€šè¿‡æœ¬å‡½æ•°ä»£ç†è¿‡
 				if (target[key] !== value) {
-					// Èç¹ûÖµÓĞ±ä¶¯
+					// å¦‚æœå€¼æœ‰å˜åŠ¨
 					watcher && watcher();
 					
-					// Èç¹ûvalueÊÇ¶ÔÏóÀàĞÍ±»ÖØĞÂ¸³Öµ£¬ÊÇ·ñĞèÒª½øĞĞÖØĞÂ´úÀí?
-					// ¿ÉÉèÖÃ²ÎÊıdeep½øĞĞ¿ØÖÆ£¬Ôİ²»ÊµÏÖ
+					// å¦‚æœvalueæ˜¯å¯¹è±¡ç±»å‹è¢«é‡æ–°èµ‹å€¼ï¼Œæ˜¯å¦éœ€è¦è¿›è¡Œé‡æ–°ä»£ç†?
+					// å¯è®¾ç½®å‚æ•°deepè¿›è¡Œæ§åˆ¶ï¼Œæš‚ä¸å®ç°
 					if(value && typeof(value) == 'object') {
 						if(value['$isProxyed4Store'] !== true) {
 							value = proxy(value,watcher,deep);
@@ -39,7 +39,7 @@ function proxy(object, watcher, deep) {
 
 	proxyTarget['$isProxyed4Store'] = true;
 
-	// ±éÀú×ÓÊôĞÔ
+	// éå†å­å±æ€§
 	for (let key in object) {
 		let value = object[key];
 		if (value && typeof (value) == 'object') {
@@ -50,25 +50,11 @@ function proxy(object, watcher, deep) {
 	return proxyTarget;
 }
 
-let arr1 = {};
-let arr2 = proxy(arr1,function() {
-	console.log(222);
-});
-
-let arr3 = proxy(arr2,function() {
-	console.log(333);
-});
-arr3.id = 123;
-console.log(444);
-
-
 /**
- * store¹¹Ôì·½·¨
- * @param {Ä£¿é} modules 
+ * storeæ„é€ æ–¹æ³•
+ * @param {æ¨¡å—} modules 
  */
 function Store(modules) {
-
-	console.log(" create Store 11 ... ");
 
 	if (!modules || typeof (modules) != 'object')
 		throw new Error(' modules cannnot be null !');
@@ -81,7 +67,7 @@ function Store(modules) {
   this.callbacks = [];
 	this.isStateChanged = false;
 
-	// ³õÊ¼»¯¶©ÔÄÕß¶ÓÁĞ
+	// åˆå§‹åŒ–è®¢é˜…è€…é˜Ÿåˆ—
 	this.subscribers = {};
 
 	let doSubscribe = subscribers => {
@@ -93,10 +79,10 @@ function Store(modules) {
 	let watcher = () => {
 		
 		if(!this.isStateChanged) {
-			// ÏÂÒ»Ö¡Ö´ĞĞ
+			// ä¸‹ä¸€å¸§æ‰§è¡Œ
 			setImmediate(() => {
 				if (this.subscribers) {
-					// ·¢ËÍ¶©ÔÄ
+					// å‘é€è®¢é˜…
 					doSubscribe(this.subscribers);
 				}
 			});
@@ -110,16 +96,16 @@ function Store(modules) {
 		let state = module.state;
 		this.state[moduleKey] = module.state = proxy(state, watcher);
 
-		// °ó¶¨stateÖµ¸Ä±äÊÂ¼ş
-		// ¼ÇÂ¼Ã¿¸öaction
+		// ç»‘å®šstateå€¼æ”¹å˜äº‹ä»¶
+		// è®°å½•æ¯ä¸ªaction
 		let actions = module.actions;
 
-		// °ó¶¨Ã¿¸öaction£¨º¯ÊıÃû³ÆºÍ¼°º¯Êı¾ä±ú£©ºÍmoduleKey¹ØÏµ
+		// ç»‘å®šæ¯ä¸ªactionï¼ˆå‡½æ•°åç§°å’ŒåŠå‡½æ•°å¥æŸ„ï¼‰å’ŒmoduleKeyå…³ç³»
 		if (!actions) continue;
 
-		// actionÃû³Æ -> module
-		// Ò»×éaction¶ÔÓ¦Í¬Ò»¸ömodule
-		// Èç¹û²»Í¬moduleµÄactionÃû³ÆÏàÍ¬ÔõÃ´°ì£¿
+		// actionåç§° -> module
+		// ä¸€ç»„actionå¯¹åº”åŒä¸€ä¸ªmodule
+		// å¦‚æœä¸åŒmoduleçš„actionåç§°ç›¸åŒæ€ä¹ˆåŠï¼Ÿ
 		for (let actionName in actions) {
 			let action = actions[actionName];
 			if (!typeof action == 'function') {
@@ -129,7 +115,7 @@ function Store(modules) {
 			if(!this.modules[actionName]) {
 				this.modules[actionName] = module;
 			}
-			// ½â¾öÍ¬Ãûaction´¢´æÎÊÌâ
+			// è§£å†³åŒåactionå‚¨å­˜é—®é¢˜
 			this.modules[moduleKey + '.' + actionName] = module;
 		}
 	}
@@ -137,7 +123,7 @@ function Store(modules) {
 }
 
 /**
- * ¶©ÔÄ£¬µ±ÓĞstateµÄÊôĞÔ±ä»¯Ê±Í¨Öª¶©ÔÄÕß
+ * è®¢é˜…ï¼Œå½“æœ‰stateçš„å±æ€§å˜åŒ–æ—¶é€šçŸ¥è®¢é˜…è€…
  */
 Store.prototype.subscribe = function(name,subscriber) {
 		
@@ -154,7 +140,7 @@ Store.prototype.subscribe = function(name,subscriber) {
 }
 
 /**
- * È¡Ïû¶©ÔÄ ²ÎÊıĞèÒªºÍ¶©ÔÄ´«µİµÄ²ÎÊıÒ»ÖÂ
+ * å–æ¶ˆè®¢é˜… å‚æ•°éœ€è¦å’Œè®¢é˜…ä¼ é€’çš„å‚æ•°ä¸€è‡´
  */
 Store.prototype.unsubscribe = function(name) {
 	if(typeof(name) != 'string')
@@ -166,7 +152,6 @@ Store.prototype.register = function (component) {
 
 	if (component == null) return;
 
-	console.log(this.components.indexOf(component));
 	if (this.components.indexOf(component) == -1) {
 		this.components.push(component);
 
@@ -178,7 +163,7 @@ Store.prototype.register = function (component) {
 				component.unMounted = true;
 
 				console.log('====== unmount 333 ');
-				// ÓëÆäºóÃæĞèÒªÅĞ¶Ï£¬²»ÈçÕâÀïÖ±½ÓÒÆ³ı
+				// ä¸å…¶åé¢éœ€è¦åˆ¤æ–­ï¼Œä¸å¦‚è¿™é‡Œç›´æ¥ç§»é™¤
 				let componentIndex = this.components.indexOf(component);
 				if(componentIndex > -1) {
 					this.components.splice(componentIndex,1);
@@ -196,13 +181,10 @@ Store.prototype.destroy = function() {
 }
 
 /**
- * µ±stateÓĞ¸³Öµ²Ù×÷ÇÒ±ä»¯Ê±
+ * å½“stateæœ‰èµ‹å€¼æ“ä½œä¸”å˜åŒ–æ—¶
  */
 Store.prototype.refreshStateChange = function (fn) {
 
-	console.log('============= refreshStateChange ing ');
-	console.log(this.components);
-	
 	fn && typeof(fn) == 'function' && this.callbacks.push(fn);
 
 	if(this.isStateChanged) {
@@ -231,10 +213,10 @@ Store.prototype.refreshStateChange = function (fn) {
 	
 			return false;
 		});*/
-		console.log('============= refreshStateChange1 ed');
+		// console.log('============= refreshStateChange1 ed');
 	}
 	
-	// Ö´ĞĞ»Øµ÷
+	// æ‰§è¡Œå›è°ƒ
 	this.callbacks.forEach(callback => {
 		try {
 			callback();
@@ -252,11 +234,11 @@ Store.prototype.dispatch = function (actionName, param, callback) {
 	if (typeof actionName != 'string') {
 		throw new Error(' The first parameter while call dispatch should be a string type ');
 	}
-	// 1 Í¨¹ıactionÃû³Æ²éÕÒ¶ÔÓ¦µÄmoduleºÍactionº¯Êı
-	// 2 »ñÈ¡moduleµÄstate×÷ÎªµÚÒ»¸ö²ÎÊı£¬params×÷ÎªµÚ¶ş¸ö²ÎÊı£¬¶Ôactionº¯Êı½øĞĞµ÷ÓÃ
-	// 3 ½«module¶ÔÏó°ó¶¨µ½actionº¯Êı£¨this=module£©
-	// 4 ÊÇ·ñÒª´¦ÀístateµÄÖµ¸Ä±äÊÂ¼ş£¨×Ô¶¯ÅĞ¶¨stateÊÇ·ñ¸Ä±ä½øĞĞÅÉ·¢ÊÂ¼ş£¬»¹ÊÇÊÖ¶¯ÅĞ¶ÏstateÊÇ·ñ±ä»¯ÁË½øĞĞµ÷ÓÃ£©
-	// 5 ÈçºÎ×Ô¶¯Ë¢ĞÂÊÓÍ¼£¨ÀàËÆvue£©
+	// 1 é€šè¿‡actionåç§°æŸ¥æ‰¾å¯¹åº”çš„moduleå’Œactionå‡½æ•°
+	// 2 è·å–moduleçš„stateä½œä¸ºç¬¬ä¸€ä¸ªå‚æ•°ï¼Œparamsä½œä¸ºç¬¬äºŒä¸ªå‚æ•°ï¼Œå¯¹actionå‡½æ•°è¿›è¡Œè°ƒç”¨
+	// 3 å°†moduleå¯¹è±¡ç»‘å®šåˆ°actionå‡½æ•°ï¼ˆthis=moduleï¼‰
+	// 4 æ˜¯å¦è¦å¤„ç†stateçš„å€¼æ”¹å˜äº‹ä»¶ï¼ˆè‡ªåŠ¨åˆ¤å®šstateæ˜¯å¦æ”¹å˜è¿›è¡Œæ´¾å‘äº‹ä»¶ï¼Œè¿˜æ˜¯æ‰‹åŠ¨åˆ¤æ–­stateæ˜¯å¦å˜åŒ–äº†è¿›è¡Œè°ƒç”¨ï¼‰
+	// 5 å¦‚ä½•è‡ªåŠ¨åˆ·æ–°è§†å›¾ï¼ˆç±»ä¼¼vueï¼‰
 
 	let module = this.modules[actionName];
 
@@ -271,30 +253,30 @@ Store.prototype.dispatch = function (actionName, param, callback) {
 	let actionFunc = module.actions[actionName];
 	let state = module.state;
 
-	// ·ÀÖ¹±»¶ñÒâ¸³Öµ£¬Ê¹ÓÃ±¸·İ
+	// é˜²æ­¢è¢«æ¶æ„èµ‹å€¼ï¼Œä½¿ç”¨å¤‡ä»½
 	actionFunc.call({
 		dispatch: (a, b) => {
 			this.dispatch(a, b)
 		}
 	}, state, param);
 
-	// ÖØÖÃ
+	// é‡ç½®
 	if (!this.frameImmediate) {
 		this.frameImmediate = true;
 	}
 
-	// ÏÂÒ»Ö¡Ö´ĞĞ
+	// ä¸‹ä¸€å¸§æ‰§è¡Œ
 	setImmediate(() => {
 		let frameImmediate = this.frameImmediate;
 		if (frameImmediate) {
 			this.frameImmediate = false;
-			// Ö´ĞĞ
+			// æ‰§è¡Œ
 			this.refreshStateChange();
 		}
 		
 	});
 
-	// ÔÚ setImmediateÖĞÒÀ´ÎÖ´ĞĞ£¬½áÊøºóÇå³ı¶ÓÁĞ
+	// åœ¨ setImmediateä¸­ä¾æ¬¡æ‰§è¡Œï¼Œç»“æŸåæ¸…é™¤é˜Ÿåˆ—
 	callback && typeof (callback) == 'function' && this.callbacks.push(callback);
 
 }
