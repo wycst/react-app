@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 import { AppContainer } from 'react-hot-loader';
 
+import { HashRouter,BrowserRouter, Route, Switch,Link} from 'react-router-dom'
 /*
 const render = (Component) => {
   ReactDOM.render(
@@ -19,12 +20,14 @@ render(App);*/
 
 ReactDOM.render(
     <AppContainer>
-      <App/>
+      <HashRouter>
+          <App/>
+      </HashRouter>
     </AppContainer>,
     document.getElementById('root')
   );
 
-// Ä£¿éÈÈÌæ»»µÄ API
+// æ¨¡å—çƒ­æ›¿æ¢çš„ API
 /*if (module.hot) {
   module.hot.accept(() => {
     render(App)

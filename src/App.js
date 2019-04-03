@@ -8,18 +8,13 @@ import {Button} from 'antd';
 // import './demos/flux/redux/app'
 import store from './store/'
 
-// import renderRoutes from './router/routers'
+//import renderRoutes from './router/routers'
 import { HashRouter,BrowserRouter, Route, Switch,Link} from 'react-router-dom'
+
+import { matchRoutes, renderRoutes } from "react-router-config";
 
 import Home from './views/home'
 import Index from './views/index'
-
-let m1 = import('./views/demo');
-/*m1.then(m => {
-  console.log(m.default);
-  console.log(m.default == Home);
-})*/
-console.log('======== 1');
 
 store.subscribe("subscribe1",function() {
     console.log(1);
@@ -53,6 +48,16 @@ class User extends Component {
 
 }
 
+let routers = [{
+  path : '/home',
+  component : Home
+},{
+path : '/index',
+component : Index
+},{
+path : '/user',
+component : User
+}]
 
 class App extends Component {
 
@@ -84,54 +89,31 @@ class App extends Component {
     return (
       <div className="App">
         <header>
-          <br />
-            {user}
-            说：{this.state.hello.message}
-          <br />
-          <div>
-            招呼语：<input ref="msg" style={{ width: 400 + 'px' }} />
-          </div>
-          <div>
-            修改人：<input ref="username" style={{ width: 400 + 'px' }} />
-          </div>
-
-          <br />
+          
           <div>
             <Button type="danger">Button</Button>
             <button onClick={this.addCountFn}>click</button>
           </div>
 
           <div>
-            {this.state.user.list.map((element,i) => {
-                return (<li key={i}>{element.name}</li>)
-            })}
+            <Link to="/home">home</Link>
+            <Link to="/index">index</Link>
           </div>
-
-          <div id="rt" style={{width:200,height:300}}>
-          
-            <HashRouter>
-                
-                <div>
-                  <Link to="/">home</Link>
-                  <Link to="/home/detail">About</Link>
-                </div>
-                <br/>
-                <br/>
-                <div>
-                  <Switch>
-                        <Route exact path="/" component={Home}/>
-                        <Route exact>
-                            <Route exact path="/home/detail" component={Index}/>
-                        </Route>
-                  </Switch>
-                </div>
-
-            </HashRouter>
-          </div>
-
-
-
         </header>
+
+        <main>
+          {renderRoutes(routers)}
+          
+          {/**
+          <Switch>
+                <Route exact path="/" component={Home}/>
+                <Route exact>
+                    <Route exact path="/home/detail" component={Index}/>
+                </Route>
+          </Switch>
+          */}
+        </main>
+
       </div>
     );
   }
@@ -141,7 +123,6 @@ class App extends Component {
     // 将 message修改为uuu
     store.dispatch("setMessage",  this.refs.msg.value,() => {
          console.log('========== setmessage1 回调执行');
-
     });
     store.dispatch("setName", this.refs.username.value,() => {
          console.log('========== setName 回调执行');
